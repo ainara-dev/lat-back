@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"log"
+
+	"github.com/ainara-dev/lat-back/database"
+	"github.com/ainara-dev/lat-back/models"
+	"github.com/ainara-dev/lat-back/services"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/malikov0216/lat-back/database"
-	"github.com/malikov0216/lat-back/models"
-	"github.com/malikov0216/lat-back/services"
-	"log"
 )
 
 func CheckRegisterUser(ctx *gin.Context) {
@@ -19,7 +20,7 @@ func CheckRegisterUser(ctx *gin.Context) {
 		if err := database.DB.
 			Where(&models.User{Phone: user.Phone}).
 			First(&user).Error; gorm.IsRecordNotFoundError(err) {
-			ctx.JSON(200, gin.H{"status": "success",  "result": nil})
+			ctx.JSON(200, gin.H{"status": "success", "result": nil})
 		} else {
 			ctx.JSON(400, gin.H{"status": "error", "result": "Пользовтель с таким номером телефона уже существует"})
 		}
@@ -34,18 +35,18 @@ func RegisterUser(ctx *gin.Context) {
 		log.Println(err)
 		ctx.JSON(400, gin.H{"status": "error", "result": err.Error()})
 	} else {
-			log.Println("JSON user:", user)
-			database.DB.Where(&models.DirectionType{Apartment: false, Office: true, Boutique: false}).Find(&directionType)
-			log.Println("Direction table: ", directionType)
-			createUser := models.User{FirstName: user.FirstName, LastName: user.LastName, Phone: user.Phone, Password: user.Password, DirectionId: directionType.ID}
-			log.Println("createUser Data: ", createUser)
-			database.DB.Create(&createUser)
-			err, token := services.GenerateToken(&createUser)
-			if err != nil {
-				log.Println(err)
-				ctx.JSON(500, gin.H{"status": "error", "result": "Ошибка при генерации токена" + err.Error()})
-			}
-			ctx.JSON(200, gin.H{"status": "success", "token": token})
+		log.Println("JSON user:", user)
+		database.DB.Where(&models.DirectionType{Apartment: false, Office: true, Boutique: false}).Find(&directionType)
+		log.Println("Direction table: ", directionType)
+		createUser := models.User{FirstName: user.FirstName, LastName: user.LastName, Phone: user.Phone, Password: user.Password, DirectionId: directionType.ID}
+		log.Println("createUser Data: ", createUser)
+		database.DB.Create(&createUser)
+		err, token := services.GenerateToken(&createUser)
+		if err != nil {
+			log.Println(err)
+			ctx.JSON(500, gin.H{"status": "error", "result": "Ошибка при генерации токена" + err.Error()})
+		}
+		ctx.JSON(200, gin.H{"status": "success", "token": token})
 
 	}
 }
@@ -60,8 +61,8 @@ func LoginUser(ctx *gin.Context) {
 		if err := database.DB.
 			Where(&models.User{Phone: user.Phone}).
 			First(&user).Error; gorm.IsRecordNotFoundError(err) {
-				log.Println(err.Error())
-				ctx.JSON(400, gin.H{"status": "error", "result": "Номер телефона или пароль не верны!"})
+			log.Println(err.Error())
+			ctx.JSON(400, gin.H{"status": "error", "result": "Номер телефона или пароль не верны!"})
 		} else {
 			err, token := services.GenerateToken(&user)
 			if err != nil {

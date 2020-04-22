@@ -2,8 +2,9 @@ package database
 
 import (
 	"fmt"
+
+	m "github.com/ainara-dev/lat-back/models"
 	"github.com/jinzhu/gorm"
-	m "github.com/malikov0216/lat-back/models"
 )
 
 var DB *gorm.DB

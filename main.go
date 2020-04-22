@@ -1,17 +1,15 @@
 package main
 
 import (
+	"log"
+
+	"github.com/ainara-dev/lat-back/config"
+	"github.com/ainara-dev/lat-back/database"
+	"github.com/ainara-dev/lat-back/handlers"
 	"github.com/gin-gonic/contrib/jwt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/malikov0216/lat-back/config"
-	"github.com/malikov0216/lat-back/database"
-	"github.com/malikov0216/lat-back/handlers"
-	"log"
 )
-
-
-
 
 func main() {
 	err := database.Connect("localhost", "postgres", "postgres", "Mother1995", 5432)
@@ -24,8 +22,6 @@ func main() {
 
 	// // Delete - delete product
 	// db.Delete(&product)
-
-
 
 	router := gin.Default()
 	router.Use(func(c *gin.Context) {

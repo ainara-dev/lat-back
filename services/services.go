@@ -1,10 +1,11 @@
 package services
 
 import (
-	jwtlib "github.com/dgrijalva/jwt-go"
-	"github.com/malikov0216/lat-back/config"
-	"github.com/malikov0216/lat-back/models"
 	"time"
+
+	"github.com/ainara-dev/lat-back/config"
+	"github.com/ainara-dev/lat-back/models"
+	jwtlib "github.com/dgrijalva/jwt-go"
 )
 
 func GenerateToken(user *models.User) (error, string) {
@@ -12,8 +13,8 @@ func GenerateToken(user *models.User) (error, string) {
 	// Set some claims
 	token.Claims = jwtlib.MapClaims{
 		"firstName": user.FirstName,
-		"id": user.ID,
-		"exp":     time.Now().Add(time.Hour * 1).Unix(),
+		"id":        user.ID,
+		"exp":       time.Now().Add(time.Hour * 1).Unix(),
 	}
 
 	// Sign and get the complete encoded token as a string

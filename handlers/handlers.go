@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/ainara-dev/lat-back/database"
 	"github.com/ainara-dev/lat-back/models"
@@ -36,7 +37,11 @@ func RegisterUser(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"status": "error", "result": err.Error()})
 	} else {
 		log.Println("JSON user:", user)
-		database.DB.Where(&models.DirectionType{Apartment: false, Office: true, Boutique: false}).Find(&directionType)
+		database.DB.Where(&models.DirectionType{
+			Apartment: user.DirectionType.Apartment,
+			Office:    user.DirectionType.Office,
+			Boutique:  user.DirectionType.Boutique,
+		}).Find(&directionType)
 		log.Println("Direction table: ", directionType)
 		createUser := models.User{FirstName: user.FirstName, LastName: user.LastName, Phone: user.Phone, Password: user.Password, DirectionId: directionType.ID}
 		log.Println("createUser Data: ", createUser)
@@ -88,4 +93,21 @@ func AddDirectionType(ctx *gin.Context) {
 		}
 		ctx.JSON(200, gin.H{"result": "success"})
 	}
+}
+
+func GetDirections(ctx *gin.Context) {
+	var directionTypeObj models.DirectionType
+	//idParam := ctx.Param("id")
+	idParam := ctx.Query("id")
+	log.Println("idddd", idParam)
+	u64, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		log.Println(err)
+	}
+	id := uint(u64)
+	database.DB.Find(&directionTypeObj, id)
+	//for k, v := range directionTypeObj {
+	//
+	//}
+	ctx.JSON(200, gin.H{"result": directionTypeObj})
 }

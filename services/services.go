@@ -12,9 +12,10 @@ func GenerateToken(user *models.User) (error, string) {
 	token := jwtlib.New(jwtlib.GetSigningMethod("HS256"))
 	// Set some claims
 	token.Claims = jwtlib.MapClaims{
-		"firstName": user.FirstName,
-		"id":        user.ID,
-		"exp":       time.Now().Add(time.Hour * 1).Unix(),
+		"firstName":   user.FirstName,
+		"id":          user.ID,
+		"directionId": user.DirectionId,
+		"exp":         time.Now().Add(time.Hour * 1).Unix(),
 	}
 
 	// Sign and get the complete encoded token as a string

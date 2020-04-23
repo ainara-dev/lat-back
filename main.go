@@ -44,6 +44,7 @@ func main() {
 		api.POST("/register", handlers.RegisterUser)
 		api.POST("/login", handlers.LoginUser)
 		api.POST("/checkRegister", handlers.CheckRegisterUser)
+		api.GET("/getDirections", handlers.GetDirections)
 		api.Use(jwt.Auth(config.MySigningKey))
 		api.GET("/test", func(ctx *gin.Context) {
 			ctx.JSON(200, gin.H{"result": "success"})

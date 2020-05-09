@@ -1,6 +1,7 @@
 package services
 
 import (
+	//"github.com/ainara-dev/lat-back/database"
 	"time"
 
 	"github.com/ainara-dev/lat-back/config"
@@ -8,14 +9,14 @@ import (
 	jwtlib "github.com/dgrijalva/jwt-go"
 )
 
-func GenerateToken(user *models.User) (error, string) {
+func GenerateToken(user *models.User, directionType *models.DirectionType) (error, string) {
 	token := jwtlib.New(jwtlib.GetSigningMethod("HS256"))
 	// Set some claims
 	token.Claims = jwtlib.MapClaims{
 		"firstName":   user.FirstName,
 		"id":          user.ID,
-		"directionId": user.DirectionId,
-		"exp":         time.Now().Add(time.Hour * 1).Unix(),
+		"directionTypes": directionType,
+		"exp":         time.Now().Add(time.Hour * 12).Unix(),
 	}
 
 	// Sign and get the complete encoded token as a string

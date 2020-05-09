@@ -16,7 +16,7 @@ func Connect(host, dbname, user, password string, port uint) error {
 	if err != nil {
 		return fmt.Errorf("error in connectDatabase(): %v", err)
 	}
-	DB.AutoMigrate(&m.User{}, &m.DirectionType{}, &m.Payment{}, &m.Meter{}, &m.Resident{}, &m.Premise{})
+	DB.AutoMigrate(&m.User{}, &m.DirectionType{}, &m.Payment{}, &m.Resident{}, &m.Premise{})
 	return nil
 }
 

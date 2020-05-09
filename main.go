@@ -41,14 +41,18 @@ func main() {
 	api := router.Group("/api")
 	{
 		api.POST("/addDirectionType", handlers.AddDirectionType)
+		api.POST("/getDirectionTypeID", handlers.GetDirectionTypeID)
 		api.POST("/register", handlers.RegisterUser)
 		api.POST("/login", handlers.LoginUser)
 		api.POST("/checkRegister", handlers.CheckRegisterUser)
-		api.GET("/getDirections", handlers.GetDirections)
+		api.POST("/createPremise", handlers.CreatePremise)
+		api.GET("/getPremises", handlers.GetPremises)
+		api.GET("/getResident", handlers.GetResident)
+		api.PUT("/updateResidentAndPrice", handlers.UpdateResidentAndPrice)
+		api.POST("/createPayment", handlers.CreatePayment)
+		api.GET("/getPayments", handlers.GetPayments)
 		api.Use(jwt.Auth(config.MySigningKey))
-		api.GET("/test", func(ctx *gin.Context) {
-			ctx.JSON(200, gin.H{"result": "success"})
-		})
+		//api.POST("/createTenant", handlers.CreateTenant)
 	}
 
 	if err := router.Run(":8080"); err != nil {

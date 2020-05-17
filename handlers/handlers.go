@@ -149,13 +149,35 @@ func CreatePayment(ctx *gin.Context) {
 			log.Println(err.Error())
 			ctx.JSON(500, gin.H{"status": "error", "result": err.Error()})
 		} else {
-			var payments []models.Payment
-			if err := database.DB.Where(&models.Payment{ResidentID: payment.ResidentID}).Find(&payments).Error; err != nil {
-				log.Println(err.Error())
+			var resident models.Resident
+			resident.ID = payment.ResidentID
+			if err := database.DB.First(&resident).Error; err != nil {
+				log.Println("find Resident", err.Error())
 				ctx.JSON(500, gin.H{"status": "error", "result": err.Error()})
 			} else {
-				ctx.JSON(200, gin.H{"status": "success", "result": payments})
+				resident.Debt += payment.Debt
+				if err := database.DB.Save(&resident).Error; err != nil {
+					log.Println(err.Error())
+					ctx.JSON(500, gin.H{"status": "error", "result": err.Error()})
+				} else {
+					var payments []models.Payment
+					if err := database.DB.Where(&models.Payment{ResidentID: payment.ResidentID}).Find(&payments).Error; err != nil {
+						log.Println(err.Error())
+						ctx.JSON(500, gin.H{"status": "error", "result": err.Error()})
+					} else {
+						result := map[string]interface{}{
+							"payments": payments,
+							"resident": resident,
+						}
+						ctx.JSON(200, gin.H{
+							"status": "success",
+							"result": result,
+						})
+					}
+				}
+
 			}
+
 		}
 	}
 }
@@ -165,6 +187,7 @@ func GetPremises(ctx *gin.Context) {
 	u64, err := strconv.ParseUint(idQuery, 10, 32)
 	if err != nil {
 		fmt.Println(err)
+		ctx.JSON(400, gin.H{"status": "error", "result": err.Error()})
 	}
 	id := uint(u64)
 	var premises []models.Premise
@@ -189,6 +212,16 @@ func GetPayments(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"status": "error", "result": err.Error()})
 	} else {
 		ctx.JSON(200, gin.H{"status": "success", "result": payments})
+	}
+}
+
+func GetResidents(ctx *gin.Context) {
+	var residents []models.Resident
+	if err := database.DB.Preload("Payments").Find(&residents).Error; err != nil {
+		log.Println(err.Error())
+		ctx.JSON(500, gin.H{"status": "error", "result": err.Error()})
+	} else {
+		ctx.JSON(200, gin.H{"status": "success", "result": residents})
 	}
 }
 

@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type DirectionType struct {
@@ -45,7 +46,7 @@ type Resident struct {
 
 type Payment struct {
 	gorm.Model
-	Month string `json:"month"`
+	Month time.Time `json:"month"`
 	Sum int `json:"sum"`
 	Communal uint `json:"communal"`
 	Status string `json:"status"`

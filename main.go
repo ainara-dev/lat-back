@@ -51,6 +51,7 @@ func main() {
 		api.PUT("/updateResidentAndPrice", handlers.UpdateResidentAndPrice)
 		api.POST("/createPayment", handlers.CreatePayment)
 		api.GET("/getPayments", handlers.GetPayments)
+		api.GET("/getResidents", handlers.GetResidents)
 		api.Use(jwt.Auth(config.MySigningKey))
 		//api.POST("/createTenant", handlers.CreateTenant)
 	}
